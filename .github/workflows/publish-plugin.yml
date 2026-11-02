@@ -23,5 +23,9 @@ on:
 
 jobs:
   publish:
+    # Must match what the reusable workflow's job asks for (the repo's default token is read-only).
+    permissions:
+      contents: write
+      packages: read
     uses: martecyber/ares-plugins/.github/workflows/publish-plugin-reusable.yml@main
     secrets: inherit
