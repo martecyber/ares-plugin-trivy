@@ -1,6 +1,6 @@
 {
   "id": "trivy",
-  "version": "1.0.0-beta1",
+  "version": "1.0.0-beta2",
   "displayName": "Trivy",
   "vendor": "Mart\u00edn Romera",
   "license": "Proprietary",

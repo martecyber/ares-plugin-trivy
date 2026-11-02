@@ -8,7 +8,7 @@
 
     <groupId>com.martecyber.plugins</groupId>
     <artifactId>ares-plugin-trivy</artifactId>
-    <version>1.0.0-beta1</version>
+    <version>1.0.0-beta2</version>
     <packaging>jar</packaging>
     <name>Ares ASM plugin — Trivy import</name>
     <description>
