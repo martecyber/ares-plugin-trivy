@@ -36,6 +36,11 @@ import java.util.Map;
  * identifier, so every package in that {@code Results[]} entry becomes a dependency of
  * it. Only when even that is blank (or the whole scan produced no packages) is anything
  * skipped, with a warning.
+ *
+ * Remote scans ({@code trivy repo <url>}, {@code trivy image <ref>}, e.g. launched by an
+ * agent from a project's repository/container_image scope entries) always use the scanned
+ * target ({@code ArtifactName}) as the SOFTWARE identifier, so the asset matches the scope
+ * entry it came from; a root package's coordinates are kept in metadata instead.
  */
 @Component
 public class TrivyJsonParser implements ImportParser {
@@ -61,13 +66,16 @@ public class TrivyJsonParser implements ImportParser {
         if (results == null || !results.isArray()) return result;
 
         String artifactName = text(root, "ArtifactName");
+        String artifactType = text(root, "ArtifactType");
+        boolean remoteTarget = "repository".equals(artifactType) || "container_image".equals(artifactType);
         for (JsonNode r : results) {
-            processResult(r, artifactName, result);
+            processResult(r, artifactName, artifactType, remoteTarget, result);
         }
         return result;
     }
 
-    private void processResult(JsonNode r, String artifactName, ParseResult result) {
+    private void processResult(JsonNode r, String artifactName, String artifactType, boolean remoteTarget,
+                               ParseResult result) {
         JsonNode packages = r.get("Packages");
         if (packages == null || !packages.isArray()) return;
 
@@ -78,7 +86,15 @@ public class TrivyJsonParser implements ImportParser {
 
         String softwareId;
         Map<String, Object> softwareMeta = new LinkedHashMap<>();
-        if (rootPkg != null) {
+        if (remoteTarget && artifactName != null && !artifactName.isBlank()) {
+            softwareId = artifactName;
+            putIfPresent(softwareMeta, "artifactType", artifactType);
+            if (rootPkg != null) {
+                putIfPresent(softwareMeta, "rootPackage", text(rootPkg, "Name"));
+                putIfPresent(softwareMeta, "version", text(rootPkg, "Version"));
+                putIfPresent(softwareMeta, "purl", purl(rootPkg));
+            }
+        } else if (rootPkg != null) {
             softwareId = text(rootPkg, "Name");
             if (softwareId == null || softwareId.isBlank()) softwareId = purl(rootPkg);
             putIfPresent(softwareMeta, "version", text(rootPkg, "Version"));

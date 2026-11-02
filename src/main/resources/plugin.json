@@ -4,7 +4,7 @@
   "displayName": "Trivy",
   "vendor": "Mart\u00edn Romera",
   "license": "Proprietary",
-  "description": "Import-only: parses `trivy fs/repo ... --format json` reports into SOFTWARE/TECHNOLOGY assets and detections.",
+  "description": "Imports `trivy ... --format json` reports into SOFTWARE/TECHNOLOGY assets and detections, and lets agents scan a project's git repository and container image scope entries.",
   "sdkVersion": "1",
   "icon": "/img/sources/trivy.svg",
   "iconLight": "/img/sources/trivy-light.svg"

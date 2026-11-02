@@ -1,0 +1,54 @@
+[
+  {
+    "toolId": "trivy",
+    "displayName": "Trivy",
+    "binary": "trivy",
+    "resultFormat": "default",
+    "validScopeKinds": ["repository", "container_image"],
+    "validAssetTypes": ["software"],
+    "maxTargets": 1,
+    "targetEmission": "positional",
+    "targetFlag": null,
+    "outputArgs": ["--format", "json", "--output", "{outPath}", "--quiet", "--scanners", "vuln"],
+    "minVersion": "0.50.0",
+    "requiresRoot": false,
+    "customBuilder": null,
+    "fields": [
+      {
+        "key": "severity",
+        "type": "string",
+        "flag": "--severity",
+        "pattern": "^(UNKNOWN|LOW|MEDIUM|HIGH|CRITICAL)(,(UNKNOWN|LOW|MEDIUM|HIGH|CRITICAL)){0,4}$"
+      },
+      {
+        "key": "ignoreUnfixed",
+        "type": "boolean_flag",
+        "flag": "--ignore-unfixed=true"
+      },
+      {
+        "key": "timeout",
+        "type": "string",
+        "flag": "--timeout",
+        "pattern": "^[0-9]{1,4}[smh]$",
+        "defaultValue": "15m"
+      },
+      {
+        "key": "skipDbUpdate",
+        "type": "boolean_flag",
+        "flag": "--skip-db-update=true"
+      },
+      {
+        "key": "insecureRegistry",
+        "type": "boolean_flag",
+        "flag": "--insecure=true"
+      },
+      {
+        "key": "scanType",
+        "type": "enum",
+        "flag": null,
+        "options": ["repo", "image"],
+        "required": true
+      }
+    ]
+  }
+]
